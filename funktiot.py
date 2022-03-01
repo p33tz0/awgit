@@ -6,7 +6,6 @@ from azure.mgmt.storage import StorageManagementClient
 from azure.storage.blob import BlobClient
 from azure.storage.blob import BlobServiceClient
 import os
-import parametrit
 import string
 import random
 
@@ -16,7 +15,7 @@ resource_client = ResourceManagementClient(credential, subscription_id)
 storage_client = StorageManagementClient(credential, subscription_id)
 network_client = NetworkManagementClient(credential, subscription_id)
 compute_client = ComputeManagementClient(credential, subscription_id)
-
+import parametrit
 
 def listrgs():
     # Retrieve the list of resource groups
@@ -57,7 +56,7 @@ def updaterg(taginimi, tagivalue):
             }
         }
     )
-    print("Update resource group:\n{}".format(resource_group))
+    print(f"Päivitettiin RG {parametrit.GROUP_NAME} tageilla {taginimi}:{tagivalue}")
 
 
 
@@ -66,12 +65,12 @@ def deleterg():
     resource_client.resource_groups.begin_delete(
         parametrit.GROUP_NAME
     ).result()
-    print("Delete resource group.\n")
+    print(f"Poistettiin resource group {parametrit.GROUP_NAME}")
 
 
 def createstorageacc():
     # Create storage account
-    storage_client.storage_accounts.begin_create(
+    async_stor = storage_client.storage_accounts.begin_create(
         parametrit.GROUP_NAME,
         parametrit.STORAGE_ACCOUNT,
         {
@@ -98,8 +97,9 @@ def createstorageacc():
                 "key2": "value2"
             }
         }
-    ).result()
-    # - end -
+    )
+    async_stor.wait()
+    print(f"Luotiin storage account {parametrit.STORAGE_ACCOUNT}")
 
 
 def createblobcont():
@@ -110,7 +110,7 @@ def createblobcont():
         parametrit.BLOB_CONTAINER,
         {}
     )
-    print("Create blob container:\n{}".format(blob_container))
+    print(f"Luotiin container {parametrit.BLOB_CONTAINER}")
 
 
 def uploadfile():
@@ -124,7 +124,7 @@ def uploadfile():
 
 
 def downloadfile():
-    nimi = str(input("Anna tiedoston nimi, jonka haluat ladata"))
+    nimi = str(input("Anna tiedoston nimi, jonka haluat ladata: "))
     MY_CONNECTION_STRING = str(input("Anna connection string Blob containeriin: "))
     BlobServiceClient.from_connection_string(MY_CONNECTION_STRING)
     blob = BlobClient.from_connection_string(MY_CONNECTION_STRING, parametrit.BLOB_CONTAINER, nimi)
@@ -149,7 +149,7 @@ def deletecontainer():
         parametrit.STORAGE_ACCOUNT,
         parametrit.BLOB_CONTAINER
     )
-    print("Delete blob container.\n")
+    print(f"Poistettiin container {parametrit.BLOB_CONTAINER}")
 
 
 def listvnet():
@@ -163,7 +163,7 @@ def listvnet():
 def createvnet(nimi="defaultvnet"):
     # Create virtual network
     network = network_client.virtual_networks.begin_create_or_update(
-        Gparametrit.ROUP_NAME,
+        parametrit.GROUP_NAME,
         parametrit.VIRTUAL_NETWORK_NAME,
         {
             "address_space": {
@@ -174,7 +174,7 @@ def createvnet(nimi="defaultvnet"):
             "location": "westeurope"
         }
     ).result()
-    print("Create virtual network:\n{}".format(network))
+    print(f"Luotiin VNET {parametrit.VIRTUAL_NETWORK_NAME}")
 
 
 def createsubnet(subnetCIDR):
@@ -187,7 +187,7 @@ def createsubnet(subnetCIDR):
             "address_prefix": subnetCIDR
         }
     ).result()
-    print("Create subnet:\n{}".format(subnet))
+    print(f"Luotiin subnet {parametrit.SUBNET_NAME}")
 
 
 def deletesubnet():
@@ -197,7 +197,7 @@ def deletesubnet():
         parametrit.VIRTUAL_NETWORK_NAME,
         parametrit.SUBNET_NAME
     ).result()
-    print("Delete subnet.\n")
+    print(f"Poistettiin subnet {parametrit.SUBNET_NAME}")
 
 
 def deletevnet():
@@ -310,12 +310,12 @@ def createvm():
             }
         }
     ).result()
-    print("Create virtual machine:\n{}".format(vm))
+    print(f"Luotiin VM nimeltä {parametrit.VM_NAME}")
 
 
 def stopvm(nimi=parametrit.VM_NAME):
     # Stop the VM
-    print('\nStop VM')
+    print('\nPysäytetään VM')
     async_vm_stop = compute_client.virtual_machines.begin_power_off(
         parametrit.GROUP_NAME, nimi)
     async_vm_stop.wait()
@@ -323,7 +323,7 @@ def stopvm(nimi=parametrit.VM_NAME):
 
 def startvm(nimi=parametrit.VM_NAME):
     # Start the VM
-    print('\nStart VM')
+    print('\nKäynnistetään VM')
     async_vm_start = compute_client.virtual_machines.begin_start(
         parametrit.GROUP_NAME, nimi)
     async_vm_start.wait()

@@ -1,10 +1,8 @@
 import os
 import random
 import string
-import funktiot
+
 from azure.identity import AzureCliCredential
-
-
 
 credential = AzureCliCredential()
 subscription_id = os.environ["SUBSCRIPTION_ID"]
@@ -13,7 +11,7 @@ kayttajanimi = str(input("Anna nimesi, resursseille luodaan nimet sen mukaan: ")
 print("Luodaan käyttäjän parametrit")
 with open("parametrit.py", "w") as parametrit:
     GROUP_NAME = f"{kayttajanimi}RG"
-    STORAGE_ACCOUNT = f"{kayttajanimi}sa"
+    STORAGE_ACCOUNT = f"{kayttajanimi}storacc"
     BLOB_CONTAINER = f"{kayttajanimi}blobstorage"
     VIRTUAL_NETWORK_NAME = f"{kayttajanimi}VNET"
     blob_name = kayttajanimi + ''.join(random.choice(string.ascii_lowercase) for i in range(8))
@@ -40,13 +38,13 @@ with open("parametrit.py", "w") as parametrit:
 
     print(f"Salasanasi on {your_password}, ota talteen jos haluat päästä käsiksi VM.")
 
-
+import funktiot
 while True:
     syote = input(
-    "Anna komento: 1: RG managerointi, 2: Storage managerointi, 3: VNet managerointi, 4: VM managerointi, X lopettaa :  ")
+        "Anna komento: 1: RG managerointi, 2: Storage managerointi, 3: VNet managerointi, 4: VM managerointi, 5: poistaa RG ja kaiken sisällön, X lopettaa :  ")
     if syote == "1":
         lisasyote = input("1: Luo RG, 2: Listaa RG:t, 3: Päivitä RG tageilla, 4: Poista RG, X: palaa : ")
-        while lisasyote != "X":
+        while lisasyote != "X" or lisasyote != "x":
             if lisasyote == "1":
                 funktiot.createrg()
                 break
@@ -61,16 +59,15 @@ while True:
             elif lisasyote == "4":
                 funktiot.deleterg()
                 break
-            elif lisasyote == "X":
-                break
-            
-    
-        
-    
+
+            break
+
+
+
     elif syote == "2":
         storagesyote = input(
             "1: Luo Storage Account, 2: Luo Blob Container, 3: Uploadaa tiedosto, 4: Lataa tiedosto, 5: Poista tiedosto, 6: Poista container, X: palaa : ")
-        while storagesyote != "X":
+        while storagesyote != "X" or storagesyote != "x":
             if storagesyote == "1":
                 funktiot.createstorageacc()
                 break
@@ -89,16 +86,16 @@ while True:
             elif storagesyote == "6":
                 funktiot.deletecontainer()
                 break
-            else:
-                break
+
+            break
     elif syote == "3":
-        vnetsyote = input("1: Luo VNET, 2: Luo Subnet, 3: poista Subnet, 4: poista VNET : ")
-        while vnetsyote != "X":
+        vnetsyote = input("1: Luo VNET, 2: Luo Subnet, 3: poista Subnet, 4: poista VNET, X: palaa : ")
+        while vnetsyote != "X" or vnetsyote != "x":
             if vnetsyote == "1":
                 funktiot.createvnet()
                 break
             elif vnetsyote == "2":
-                cidr = str(input("Anna CIDR, oletus 10.0.0.0/24"))
+                cidr = str(input("Anna CIDR, oletus 10.0.0.0/24 : "))
                 funktiot.createsubnet(cidr)
                 break
             elif vnetsyote == "3":
@@ -107,27 +104,29 @@ while True:
             elif vnetsyote == "4":
                 funktiot.deletevnet()
                 break
+            break
     elif syote == "4":
         vmsyote = input(
-            " 1: Luo NIC<PAKOLLINEN!>, 2: luo VM, 3: pysäytä VM, 4: käynnistä VM, 5: listaa VM:t, X: palaa : ")
-        while vmsyote != "X":
-            if vmsyote == "1":
+            " 1: luo VM, 2: pysäytä VM, 3: käynnistä VM, 4: listaa VM:t, X: palaa : ")
+        while vmsyote != "X" or vmsyote != "x":
+            if vmsyote == "0213":
                 funktiot.createnic()
                 break
             elif vmsyote == "0":
                 funktiot.luosubnetnic()
                 break
-            elif vmsyote == "2":
+            elif vmsyote == "1":
                 funktiot.createvm()
                 break
-            elif vmsyote == "3":
+            elif vmsyote == "2":
                 funktiot.stopvm()
                 break
-            elif vmsyote == "4":
+            elif vmsyote == "3":
                 funktiot.startvm()
                 break
-            elif vmsyote == "5":
+            elif vmsyote == "4":
                 funktiot.listvm()
                 break
+            break
     elif syote == "X" or syote == "x":
-        break    
+        break
