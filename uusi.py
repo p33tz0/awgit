@@ -40,11 +40,12 @@ with open("parametrit.py", "w") as parametrit:
 
     print(f"Salasanasi on {your_password}, ota talteen jos haluat päästä käsiksi VM.")
 
-syote = input(
-    "Anna komento: 1: RG managerointi, 2: Storage managerointi, 3: VNet managerointi, 4: VM managerointi:  ")
-while syote != "X":
+
+while True:
+    syote = input(
+    "Anna komento: 1: RG managerointi, 2: Storage managerointi, 3: VNet managerointi, 4: VM managerointi, X lopettaa :  ")
     if syote == "1":
-        lisasyote = input("1: Luo RG, 2: Listaa RG:t, 3: Päivitä RG tageilla, 4: Poista RG, X: palaa: ")
+        lisasyote = input("1: Luo RG, 2: Listaa RG:t, 3: Päivitä RG tageilla, 4: Poista RG, X: palaa : ")
         while lisasyote != "X":
             if lisasyote == "1":
                 funktiot.createrg()
@@ -60,12 +61,15 @@ while syote != "X":
             elif lisasyote == "4":
                 funktiot.deleterg()
                 break
-            else:
+            elif lisasyote == "X":
                 break
-        break
+            
+    
+        
+    
     elif syote == "2":
         storagesyote = input(
-            "1: Luo Storage Account, 2: Luo Blob Container, 3: Uploadaa tiedosto, 4: Lataa tiedosto, 5: Poista tiedosto, 6: Poista container, X: Palaa")
+            "1: Luo Storage Account, 2: Luo Blob Container, 3: Uploadaa tiedosto, 4: Lataa tiedosto, 5: Poista tiedosto, 6: Poista container, X: palaa : ")
         while storagesyote != "X":
             if storagesyote == "1":
                 funktiot.createstorageacc()
@@ -88,7 +92,7 @@ while syote != "X":
             else:
                 break
     elif syote == "3":
-        vnetsyote = input("1: Luo VNET, 2: Luo Subnet, 3: poista Subnet, 4: poista VNET")
+        vnetsyote = input("1: Luo VNET, 2: Luo Subnet, 3: poista Subnet, 4: poista VNET : ")
         while vnetsyote != "X":
             if vnetsyote == "1":
                 funktiot.createvnet()
@@ -105,7 +109,7 @@ while syote != "X":
                 break
     elif syote == "4":
         vmsyote = input(
-            " 1: Luo NIC<PAKOLLINEN!>, 2: luo VM, 3: pysäytä VM, 4: käynnistä VM, 5: listaa VM:t, X: palaa: ")
+            " 1: Luo NIC<PAKOLLINEN!>, 2: luo VM, 3: pysäytä VM, 4: käynnistä VM, 5: listaa VM:t, X: palaa : ")
         while vmsyote != "X":
             if vmsyote == "1":
                 funktiot.createnic()
@@ -125,3 +129,5 @@ while syote != "X":
             elif vmsyote == "5":
                 funktiot.listvm()
                 break
+    elif syote == "X" or syote == "x":
+        break    
