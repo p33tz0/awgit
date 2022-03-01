@@ -3,7 +3,6 @@ import random
 import string
 
 from azure.identity import AzureCliCredential
-
 credential = AzureCliCredential()
 subscription_id = os.environ["SUBSCRIPTION_ID"]
 

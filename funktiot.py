@@ -8,6 +8,11 @@ from azure.storage.blob import BlobServiceClient
 import os
 import string
 import random
+import datetime
+
+
+
+now = datetime.datetime.now()
 
 credential = AzureCliCredential()
 subscription_id = os.environ["SUBSCRIPTION_ID"]
@@ -36,6 +41,9 @@ def createrg():
         parametrit.GROUP_NAME,
         {"location": "westeurope"})
     print(f"Luotiin RG nimeltä {parametrit.GROUP_NAME}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} luotu RG {parametrit.GROUP_NAME}")
+        log.write("\n")
 
 
 def getrg():
@@ -57,6 +65,9 @@ def updaterg(taginimi, tagivalue):
         }
     )
     print(f"Päivitettiin RG {parametrit.GROUP_NAME} tageilla {taginimi}:{tagivalue}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} päivitetty RG {parametrit.GROUP_NAME} tageilla {taginimi}:{tagivalue}")
+        log.write("\n")
 
 
 
@@ -66,6 +77,9 @@ def deleterg():
         parametrit.GROUP_NAME
     ).result()
     print(f"Poistettiin resource group {parametrit.GROUP_NAME}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} poistettu RG {parametrit.GROUP_NAME}")
+        log.write("\n")
 
 
 def createstorageacc():
@@ -100,6 +114,9 @@ def createstorageacc():
     )
     async_stor.wait()
     print(f"Luotiin storage account {parametrit.STORAGE_ACCOUNT}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} Luotu storage account {parametrit.STORAGE_ACCOUNT}")
+        log.write("\n")
 
 
 def createblobcont():
@@ -111,6 +128,9 @@ def createblobcont():
         {}
     )
     print(f"Luotiin container {parametrit.BLOB_CONTAINER}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} luotu container {parametrit.BLOB_CONTAINER}")
+        log.write("\n")
 
 
 def uploadfile():
@@ -121,6 +141,9 @@ def uploadfile():
     with open(nimi, "rb") as data:
         blob.upload_blob(data)
     print(f"Lähetetty tiedosto {nimi}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} lähetetty tiedosto {nimi}")
+        log.write("\n")
 
 
 def downloadfile():
@@ -132,6 +155,9 @@ def downloadfile():
         blob_data = blob.download_blob()
         blob_data.readinto(my_blob)
     print(f"Ladattu tiedosto {nimi}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} ladattu tiedosto {nimi}")
+        log.write("\n")
 
 
 def deletefile():
@@ -141,6 +167,9 @@ def deletefile():
     blob = BlobClient.from_connection_string(MY_CONNECTION_STRING, parametrit.BLOB_CONTAINER, nimi)
     blob.delete_blob(delete_snapshots=False)
     print(f"Poistettu tiedosto {nimi}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} poistettu tiedosto {nimi}")
+        log.write("\n")
 
 
 def deletecontainer():
@@ -150,6 +179,9 @@ def deletecontainer():
         parametrit.BLOB_CONTAINER
     )
     print(f"Poistettiin container {parametrit.BLOB_CONTAINER}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} poistettu container {parametrit.BLOB_CONTAINER}")
+        log.write("\n")
 
 
 def listvnet():
@@ -175,6 +207,9 @@ def createvnet(nimi="defaultvnet"):
         }
     ).result()
     print(f"Luotiin VNET {parametrit.VIRTUAL_NETWORK_NAME}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} luotu VNET {parametrit.VIRTUAL_NETWORK_NAME}")
+        log.write("\n")
 
 
 def createsubnet(subnetCIDR):
@@ -188,6 +223,9 @@ def createsubnet(subnetCIDR):
         }
     ).result()
     print(f"Luotiin subnet {parametrit.SUBNET_NAME}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} luotu subnet {parametrit.SUBNET_NAME}")
+        log.write("\n")
 
 
 def deletesubnet():
@@ -198,6 +236,9 @@ def deletesubnet():
         parametrit.SUBNET_NAME
     ).result()
     print(f"Poistettiin subnet {parametrit.SUBNET_NAME}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} poistettu subnet {parametrit.SUBNET_NAME}")
+        log.write("\n")
 
 
 def deletevnet():
@@ -205,6 +246,9 @@ def deletevnet():
         parametrit.GROUP_NAME,
         parametrit.VIRTUAL_NETWORK_NAME)
     print(f"Poistetu VNET {parametrit.VIRTUAL_NETWORK_NAME}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} poistettu VNET {parametrit.VIRTUAL_NETWORK_NAME}")
+        log.write("\n")
 
 
 def luosubnetnic():
@@ -216,6 +260,7 @@ def luosubnetnic():
     )
     async_subnet.wait()
     print(f"Luotiin Subnet {parametrit.NICSUBNET}")
+
 
 
 def createnic():
@@ -252,6 +297,9 @@ def createvm():
             }]
         }
     ).result()
+    with open("log.txt", "a") as log:
+        log.write(f"{now} luotu NIC {NICNIMI}")
+        log.write("\n")
 
     vm = compute_client.virtual_machines.begin_create_or_update(
         parametrit.GROUP_NAME,
@@ -311,22 +359,31 @@ def createvm():
         }
     ).result()
     print(f"Luotiin VM nimeltä {parametrit.VM_NAME}")
+    with open("log.txt", "a") as log:
+        log.write(f"{now} luotu VM {parametrit.VM_NAME}")
+        log.write("\n")
 
 
 def stopvm(nimi=parametrit.VM_NAME):
     # Stop the VM
-    print('\nPysäytetään VM')
+    print('"\n"Pysäytetään VM')
     async_vm_stop = compute_client.virtual_machines.begin_power_off(
         parametrit.GROUP_NAME, nimi)
     async_vm_stop.wait()
+    with open("log.txt", "a") as log:
+        log.write(f"{now} pysäytetty VM {nimi}")
+        log.write("\n")
 
 
 def startvm(nimi=parametrit.VM_NAME):
     # Start the VM
-    print('\nKäynnistetään VM')
+    print('"\n"Käynnistetään VM')
     async_vm_start = compute_client.virtual_machines.begin_start(
         parametrit.GROUP_NAME, nimi)
     async_vm_start.wait()
+    with open("log.txt", "a") as log:
+        log.write(f"{now} käynnistetty VM {nimi}")
+        log.write("\n")
 
 
 def listvm():
@@ -335,3 +392,4 @@ def listvm():
     )
     for re in result_create:
         print(re.name)
+
