@@ -1,5 +1,7 @@
-import requests
 import smtplib
+
+import requests
+
 server = smtplib.SMTP('smtp.gmail.com', 587)
 
 server.ehlo()
